@@ -1,0 +1,29 @@
+button {
+  cursor: pointer;
+  font: inherit;
+  color: white;
+  background-color: #df451f;
+  border: 1px solid #e45936;
+  border-radius: 4px;
+  padding: 0.5rem 2.5rem;
+  margin: 1rem;
+}
+
+button:hover {
+  background-color: transparent;
+  border-color: #df451f;
+  color: #df451f;
+}
+
+.toggle {
+  margin-top: 1rem;
+  background-color: transparent;
+  color: #df451f;
+  border: none;
+  padding: 0.15rem 1.5rem;
+}
+
+.toggle:hover {
+  background-color: transparent;
+  color: #df451f;
+}
