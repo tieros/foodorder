@@ -1,17 +1,19 @@
-import { useContext } from "react";
-import { AuthContext } from "../../store/auth-context";
 import classes from "./Profile.module.css";
 import CancelButton from "../UI/CancelButton";
 import { useFormik } from "formik";
 import validations from "./validations";
+import AuthService from "../../services/auth";
 
 const FormikForm = (props) => {
-  const authCtx = useContext(AuthContext);
+  
   const { handleSubmit, errors, isValid, touched, getFieldProps, values } =
     useFormik({
       initialValues: {
         name: "",
         surname: "",
+        email: "",
+        password: "",
+        passwordConfirm: "",
         phone: "",
         address: "",
         city: "",
@@ -24,7 +26,7 @@ const FormikForm = (props) => {
       validateOnMount: true,
     });
   const logoutHandler = () => {
-    authCtx.logout();
+    AuthService.logoutHandler();
     props.onClose();
   };
 

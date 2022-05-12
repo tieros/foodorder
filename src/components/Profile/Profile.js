@@ -1,25 +1,25 @@
 import { ref, child, get, set } from "firebase/database";
 import { database } from "../../Firebase/firebase-config";
 import Modal from "../UI/Modal";
-import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../store/auth-context";
+import { useEffect, useState } from "react";
 import ProfileInfo from "./ProfileInfo";
 import LoadingSpinner from "../UI/LoadingSpinner";
 import style from "./Profile.module.css";
 import FormikForm from "./FormikForm";
 import InfoNotification from "./InfoNotification";
+import { useSelector } from "react-redux";
 
 export default function Profile(props) {
   const [userData, setUserData] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [isSucceed, setIsSucceed] = useState(null);
 
-  const authCtx = useContext(AuthContext);
+  const userInfo = useSelector(state => state.auth.userInfo)
 
   useEffect(() => {
     const dbRef = ref(database);
 
-    get(child(dbRef, `users/${authCtx.userInfo?.uid}`))
+    get(child(dbRef, `users/${userInfo?.uid}`))
       .then((snapshot) => {
         if (snapshot.exists()) {
           setUserData(snapshot.val());
@@ -33,7 +33,7 @@ export default function Profile(props) {
       .catch((error) => {
         console.error(error);
       });
-  }, [authCtx.userInfo?.uid]);
+  }, [userInfo?.uid]);
 
   function closeModal() {
     props.onCloseProfile();
@@ -42,7 +42,7 @@ export default function Profile(props) {
   function saveUserInfoHandler(data) {
     // send to Database ./users
     const dbRef = ref(database);
-    set(child(dbRef, `users/${authCtx.userInfo.uid}`), {
+    set(child(dbRef, `users/${userInfo.uid}`), {
       name: data.name,
       surname: data.surname,
       phone: data.phone,
@@ -56,10 +56,9 @@ export default function Profile(props) {
       })
       .catch((error) => {
         setIsSucceed(false);
-        authCtx.makeFormValid(false);
       });
   }
-  console.log(authCtx.userInfo);
+  console.log(userInfo);
 
   return (
     <Modal onClose={props.onCloseProfile}>

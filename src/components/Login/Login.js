@@ -1,28 +1,31 @@
 import Card from "../UI/Card";
 import Modal from "../UI/Modal";
-import { useRef, useState, useContext, useEffect } from "react";
-import { AuthContext } from "../../store/auth-context";
+import { useRef, useState,  useEffect } from "react";
 import style from "./Login.module.css";
-import FormikForm from "../Profile/FormikForm";
+import { useDispatch, useSelector } from "react-redux";
+import { authActions } from "../../store/slices";
+import AuthService from "../../services/auth";
 
 export default function Login(props) {
   const [loginMode, setLoginMode] = useState(true);
   const [redirectProfile, setRedirectProfile] = useState(null);
-  const [isMounted, setIsMounted] = useState(false);
 
-  const authCtx = useContext(AuthContext);
+  const hasError = useSelector(state => state.auth.hasError);
+  const errorMessage = useSelector(state=> state.auth.errorMessage)
+
+  const dispatch = useDispatch()
 
   const emailRef = useRef();
   const passwordRef = useRef();
 
   useEffect(() => {
-    if (authCtx.hasError === false) {
+    if (hasError === false) {
       props.onCloseLogin();
     }
     return () => {
-      authCtx.setHasError(null);
+      dispatch(authActions.setHasError(null))
     };
-  }, [authCtx, authCtx.hasError, props]);
+  }, [hasError, props, dispatch]);
 
   async function loginHandler(event) {
     event.preventDefault();
@@ -30,9 +33,9 @@ export default function Login(props) {
     const enteredEmail = emailRef.current.value;
     const enteredPassword = passwordRef.current.value;
     if (loginMode) {
-      authCtx.login(enteredEmail, enteredPassword);
+      AuthService.loginHandler(enteredEmail, enteredPassword);
     } else if (!loginMode) {
-      authCtx.register(enteredEmail, enteredPassword);
+      AuthService.registerHandler(enteredEmail, enteredPassword);
       setRedirectProfile(true);
     }
   }
@@ -54,7 +57,7 @@ export default function Login(props) {
               <input type="password" placeholder="Password" ref={passwordRef} />
             </div>
             <button onClick={loginHandler}>Submit</button>
-            {authCtx.hasError === true && <p>{authCtx.errorMessage}</p>}
+            {hasError === true && <p>{errorMessage}</p>}
             <button
               type="button"
               className={style.toggle}
@@ -64,7 +67,6 @@ export default function Login(props) {
             </button>
           </>
         )}
-        {redirectProfile && <FormikForm onClose={props.onCloseLogin} />}
       </Card>
     </Modal>
   );

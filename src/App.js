@@ -1,26 +1,25 @@
-import { useContext } from 'react';
-import Cart from './components/Cart/Cart';
-import Header from './components/Layout/Header';
-import Meals from './components/Meals/Meals';
-import CartProvider from './store/CartProvider';
+import Cart from './pages/Cart';
 import { Route, Switch } from 'react-router-dom';
 import LoginPage from './pages/Login';
 import HomePage from './pages/Home';
-import { AuthContext } from './store/auth-context';
-import ProfileInfo from './components/Profile/ProfileInfo';
+import { Provider, useSelector } from 'react-redux';
+import Profile from './pages/Profile';
+import { store } from './store/index';
 
 function App() {
-    const authCtx = useContext(AuthContext);
+    const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
 
     return (
         <>
-            <CartProvider>
+        <Provider store={store}>
                 <Switch>
                     <Route exact path='/' component={HomePage} />
-                    {!authCtx.isLoggedIn ? <Route path='/login' component={LoginPage} /> : <Route path='/profile' component={ProfileInfo} />}
+                    {!isLoggedIn ? 
+                        <Route path='/login' component={LoginPage} /> : 
+                        <Route path='/profile' component={Profile} />}
                     <Route path='/cart' component={Cart} />
                 </Switch>
-            </CartProvider>
+        </Provider>
         </>
     );
 }

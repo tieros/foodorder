@@ -1,11 +1,11 @@
-import { useContext, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Modal from "../UI/Modal";
 import CartItem from "./CartItem";
 import classes from "./Cart.module.css";
-import CartContext from "../../store/cart-context";
-import { AuthContext } from "../../store/auth-context";
 import { database } from "../../Firebase/firebase-config";
 import { ref, child, get, set } from "firebase/database";
+import { useDispatch, useSelector } from "react-redux";
+import { cartActions } from "../../store/slices";
 
 const dbRef = ref(database);
 
@@ -13,52 +13,49 @@ const Cart = (props) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [didSubmit, setDidSubmit] = useState(false);
   const [userData, setUserData] = useState(null);
-  const cartCtx = useContext(CartContext);
-  const authCtx = useContext(AuthContext);
+  
+  const userInfo = useSelector(state => state.auth.userInfo);
+  const items = useSelector(state => state.cart.items);
+  const totalAmount = useSelector((state) => state.cart.totalAmount);
 
-  const totalAmount = `$${cartCtx.totalAmount.toFixed(2)}`;
-  const hasItems = cartCtx.items.length > 0;
+  const dispatch = useDispatch();
+
+  const totalAmountUpdated = `$${totalAmount.toFixed(2)}`;
+  const hasItems = items.length > 0;
 
   useEffect(() => {
-    get(child(dbRef, `users/${authCtx.userInfo?.uid}`)).then((snapshot) => {
+    get(child(dbRef, `users/${userInfo?.uid}`)).then((snapshot) => {
       if (snapshot.exists) {
-        authCtx.makeFormValid(true);
-        console.log(authCtx.canOrder);
         setUserData(snapshot.val());
       }
     });
   }, []);
 
   const cartItemRemoveHandler = (id) => {
-    cartCtx.removeItem(id);
+    dispatch(cartActions.removeItem(id))
   };
 
   const cartItemAddHandler = (item) => {
-    cartCtx.addItem(item);
+    dispatch(cartActions.addItem(item));
   };
 
   const submitOrderHandler = async () => {
-    if (!authCtx.canOrder) {
-      alert("Please complete your profile information to proceed.");
-      // Redirect to Profile
-      return;
-    }
     setIsSubmitting(true);
     console.log(userData);
 
-    await set(child(dbRef, `orders/${authCtx.userInfo.uid}/`), {
+    await set(child(dbRef, `orders/${userInfo.uid}/`), {
       userData,
-      ordereditems: cartCtx.items,
+      ordereditems: items,
     });
 
     setIsSubmitting(false);
     setDidSubmit(true);
-    cartCtx.clearCart();
+    dispatch(cartActions.clearCart())
   };
 
   const cartItems = (
     <ul className={classes["cart-items"]}>
-      {cartCtx.items.map((item) => (
+      {items.map((item) => (
         <CartItem
           key={item.id}
           name={item.name}
@@ -89,7 +86,7 @@ const Cart = (props) => {
       {cartItems}
       <div className={classes.total}>
         <span>Total Amount</span>
-        <span>{totalAmount}</span>
+        <span>{totalAmountUpdated}</span>
       </div>
 
       {modalActions}

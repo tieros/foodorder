@@ -1,14 +1,20 @@
-import { useState, useContext } from "react";
-import { AuthContext } from "../../store/auth-context";
+import { useState} from "react";
+import  AuthService from "../../services/auth";
 import { database } from "../../Firebase/firebase-config";
 import { ref, child, update } from "firebase/database";
 import CancelButton from "../UI/CancelButton";
 import classes from "./Profile.module.css";
 import InfoNotification from "./InfoNotification";
+import { useSelector } from "react-redux";
+
 
 let style;
 
 export default function ProfileInfo(props) {
+
+  const userInfo = useSelector(state => state.auth.userInfo);
+
+
   const { address, name, surname, phone, postalCode, city } = props.data;
 
   const [enteredName, setEnteredName] = useState(name);
@@ -22,7 +28,7 @@ export default function ProfileInfo(props) {
 
   const [editVersion, setEditVersion] = useState(false);
 
-  const authCtx = useContext(AuthContext);
+  
 
   let component;
   function editEnable() {
@@ -43,7 +49,7 @@ export default function ProfileInfo(props) {
   function sendData(event) {
     event.preventDefault();
     const dbRef = ref(database);
-    update(child(dbRef, `users/${authCtx.userInfo.uid}`), {
+    update(child(dbRef, `users/${userInfo.uid}`), {
       name: enteredName,
       surname: enteredSurname,
       phone: enteredPhone,
@@ -62,7 +68,7 @@ export default function ProfileInfo(props) {
   }
 
   const logoutHandler = () => {
-    authCtx.logout();
+    AuthService.logoutHandler();
     props.onClose();
   };
 

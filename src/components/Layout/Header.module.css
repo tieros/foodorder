@@ -71,10 +71,6 @@
   animation: bump 300ms ease-out;
 }
 
-.headerButtons {
-  display: flex;
-}
-
 @keyframes bump {
   0% {
     transform: scale(1);
