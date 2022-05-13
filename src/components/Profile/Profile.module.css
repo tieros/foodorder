@@ -1,0 +1,97 @@
+.profile {
+  display: flex;
+  flex-direction: column;
+}
+.cancelButtonContainer {
+  height: 55px;
+  display: flex;
+  justify-content: flex-end;
+}
+.cancelButton {
+  align-self: flex-end;
+  background: none;
+  border: none;
+  padding: 0;
+  margin-right: 0;
+}
+
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+label {
+  font-weight: bold;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  display: inline-block;
+}
+
+input {
+  font-size: large;
+  flex-basis: 1;
+  background-color: white;
+  font: inherit;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 20rem;
+  max-width: 100%;
+}
+
+.successContainer {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+
+.successContent {
+  display: inline-flex;
+  align-items: center;
+}
+
+.successContent img {
+  height: 2rem;
+  margin-right: 15px;
+}
+
+.button {
+  cursor: pointer;
+  font: inherit;
+  color: white;
+  background-color: #df451f;
+  border: 1px solid #e45936;
+  border-radius: 4px;
+  padding: 0.5rem 2.5rem;
+  margin: 1rem;
+}
+
+.button:hover {
+  background-color: transparent;
+  border-color: #df451f;
+  color: #df451f;
+}
+
+.button:disabled {
+  background-color: #ffe6dc;
+  color: gray;
+  border: tomato;
+  cursor: not-allowed;
+}
+.invalid {
+  border-color: tomato;
+  background-color: #ffeff1;
+}
+
+.errorMsg {
+  color: tomato;
+}
+
+.editBtn {
+  align-self: center;
+}
+
+.logoutBtn {
+  align-self: flex-end;
+}

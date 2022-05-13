@@ -1,0 +1,16 @@
+nav {
+    display: flex;
+    align-items: center;
+    ul {
+        display: flex;
+        width: 50rem;
+        justify-content: space-between;
+    }
+    li {
+        width: 5rem;
+        list-style: none;
+    }
+    div {
+        display: inline-flex;
+    }
+}
